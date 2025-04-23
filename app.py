@@ -58,7 +58,6 @@ def login_user():
             st.error("Invalid credentials")
 
 # Encrypt and decrypt data
-# Encrypt and decrypt data
 def encrypt_decrypt_data():
     # Load user data here
     df = load_data()
@@ -102,15 +101,16 @@ def encrypt_decrypt_data():
             st.session_state.view = "login"
             st.experimental_rerun()
 
-        # Display Slider with Encrypted Files if available
-        encrypted_files = df[df["Username"] == st.session_state.username]["Encrypted_Data"].dropna().tolist()
-        
-        # Check if there are encrypted files
-        if encrypted_files:
-            file_index = st.slider("Select an encrypted file to view", 0, len(encrypted_files) - 1, 0)
-            st.code(encrypted_files[file_index], language="text")
+        # Fetch and display the encrypted data directly for the logged-in user
+        encrypted_data = df[df["Username"] == st.session_state.username]["Encrypted_Data"].dropna().tolist()
+
+        # Check if there is any encrypted data and display it
+        if encrypted_data:
+            st.subheader("Your Encrypted Data:")
+            st.code(encrypted_data[0], language="text")  # Display the first encrypted data entry
         else:
-            st.info("No encrypted files found. Please encrypt some data.")
+            st.info("No encrypted data found. Please encrypt some data.")
+
     else:
         st.error("No user is logged in.")
 
