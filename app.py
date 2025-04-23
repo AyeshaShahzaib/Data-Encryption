@@ -104,9 +104,12 @@ def encrypt_decrypt_data():
 
         # Display Slider with Encrypted Files
         encrypted_files = df[df["Username"] == st.session_state.username]["Encrypted_Data"].dropna().tolist()
+        
         if encrypted_files:
             file_index = st.slider("Select an encrypted file to view", 0, len(encrypted_files) - 1, 0)
             st.code(encrypted_files[file_index], language="text")
+        else:
+            st.info("No encrypted files found. Please encrypt some data.")
     else:
         st.error("No user is logged in.")
 
