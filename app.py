@@ -24,19 +24,18 @@ def register_user():
     username = st.text_input("Enter a Username")
     password = st.text_input("Enter a Password", type="password")
 
-    if st.button("Register"):
-        if username and password:
-            if username in df["Username"].values:
-                st.warning("Username already exists. Please choose a different one.")
-                return
+if st.button("Register"):
+    if username and password:
+        if username in df["Username"].values:
+            st.warning("Username already exists. Please choose a different one.")
+            return
 
-            hashed_password = hashlib.sha256(password.encode()).hexdigest()
-            new_user = pd.DataFrame([{"Username": username, "Password": hashed_password, "Encrypted_Data": ""}])
-            df = pd.concat([df, new_user], ignore_index=True)
-            save_data(df)
-            st.success("Account created successfully! Please log in.")
-            if should_rerun:
-                st.experimental_rerun()
+        hashed_password = hashlib.sha256(password.encode()).hexdigest()
+        new_user = pd.DataFrame([{"Username": username, "Password": hashed_password, "Encrypted_Data": ""}])
+        df = pd.concat([df, new_user], ignore_index=True)
+        save_data(df)
+        st.success("Account created successfully! Please log in.")
+        st.experimental_rerun() 
 
 # Login user
 def login_user():
