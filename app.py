@@ -35,7 +35,8 @@ def register_user():
             df = pd.concat([df, new_user], ignore_index=True)
             save_data(df)
             st.success("Account created successfully! Please log in.")
-            st.experimental_rerun()
+            if should_rerun:
+                st.experimental_rerun()
 
 # Login user
 def login_user():
