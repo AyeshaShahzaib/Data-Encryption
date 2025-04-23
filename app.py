@@ -62,6 +62,9 @@ def encrypt_decrypt_data():
     st.subheader(f"Welcome, {st.session_state.username}")
     option = st.selectbox("Choose an option", ["Encrypt Data", "Decrypt Data", "Go Back to Login"])
 
+    # Load user data here
+    df = load_data()
+
     if option == "Encrypt Data":
         data_to_encrypt = st.text_area("Enter the data you want to encrypt")
         password = st.text_input("Enter a Password for Encryption", type="password")
@@ -69,7 +72,6 @@ def encrypt_decrypt_data():
         if st.button("Encrypt"):
             encrypted = encrypt_data(data_to_encrypt, password)
             # Save the encrypted data to the user's record
-            df = load_data()
             user_index = df[df["Username"] == st.session_state.username].index[0]
             df.at[user_index, "Encrypted_Data"] = encrypted
             save_data(df)
@@ -100,7 +102,6 @@ def encrypt_decrypt_data():
     if encrypted_files:
         file_index = st.slider("Select an encrypted file to view", 0, len(encrypted_files) - 1, 0)
         st.code(encrypted_files[file_index], language="text")
-
 # Main view
 def home():
     st.title("🔐 Personal Data Encryption")
