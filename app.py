@@ -58,50 +58,58 @@ def login_user():
             st.error("Invalid credentials")
 
 # Encrypt and decrypt data
+# Encrypt and decrypt data
 def encrypt_decrypt_data():
-    st.subheader(f"Welcome, {st.session_state.username}")
-    option = st.selectbox("Choose an option", ["Encrypt Data", "Decrypt Data", "Go Back to Login"])
-
     # Load user data here
     df = load_data()
 
-    if option == "Encrypt Data":
-        data_to_encrypt = st.text_area("Enter the data you want to encrypt")
-        password = st.text_input("Enter a Password for Encryption", type="password")
+    # If user is logged in, show the encrypted/decryption options
+    if "username" in st.session_state:
+        st.subheader(f"Welcome, {st.session_state.username}")
+        
+        # Option to Encrypt or Decrypt
+        option = st.selectbox("Choose an option", ["Encrypt Data", "Decrypt Data", "Go Back to Login"])
+        
+        if option == "Encrypt Data":
+            data_to_encrypt = st.text_area("Enter the data you want to encrypt")
+            password = st.text_input("Enter a Password for Encryption", type="password")
 
-        if st.button("Encrypt"):
-            encrypted = encrypt_data(data_to_encrypt, password)
-            # Save the encrypted data to the user's record
-            user_index = df[df["Username"] == st.session_state.username].index[0]
-            df.at[user_index, "Encrypted_Data"] = encrypted
-            save_data(df)
-            st.session_state.encrypted_data = encrypted
-            st.success("Data encrypted successfully!")
-            st.code(encrypted)
+            if st.button("Encrypt"):
+                encrypted = encrypt_data(data_to_encrypt, password)
+                # Save the encrypted data to the user's record
+                user_index = df[df["Username"] == st.session_state.username].index[0]
+                df.at[user_index, "Encrypted_Data"] = encrypted
+                save_data(df)
+                st.session_state.encrypted_data = encrypted
+                st.success("Data encrypted successfully!")
+                st.code(encrypted)
 
-    elif option == "Decrypt Data":
-        password = st.text_input("Enter the Password for Decryption", type="password")
-        if st.button("Decrypt"):
-            if "encrypted_data" in st.session_state:
-                try:
-                    decrypted = decrypt_data(st.session_state.encrypted_data, password)
-                    st.success("Data decrypted successfully!")
-                    st.code(decrypted)
-                except:
-                    st.error("Decryption failed. Wrong password or invalid data.")
-            else:
-                st.error("No encrypted data found.")
+        elif option == "Decrypt Data":
+            password = st.text_input("Enter the Password for Decryption", type="password")
+            if st.button("Decrypt"):
+                if "encrypted_data" in st.session_state:
+                    try:
+                        decrypted = decrypt_data(st.session_state.encrypted_data, password)
+                        st.success("Data decrypted successfully!")
+                        st.code(decrypted)
+                    except Exception as e:
+                        st.error(f"Decryption failed. Error: {str(e)}")
+                else:
+                    st.error("No encrypted data found.")
 
-    elif option == "Go Back to Login":
-        st.session_state.logged_in = False
-        st.session_state.view = "login"
-        st.experimental_rerun()
+        elif option == "Go Back to Login":
+            st.session_state.logged_in = False
+            st.session_state.view = "login"
+            st.experimental_rerun()
 
-    # Display Slider with Encrypted Files
-    encrypted_files = df[df["Username"] == st.session_state.username]["Encrypted_Data"].dropna().tolist()
-    if encrypted_files:
-        file_index = st.slider("Select an encrypted file to view", 0, len(encrypted_files) - 1, 0)
-        st.code(encrypted_files[file_index], language="text")
+        # Display Slider with Encrypted Files
+        encrypted_files = df[df["Username"] == st.session_state.username]["Encrypted_Data"].dropna().tolist()
+        if encrypted_files:
+            file_index = st.slider("Select an encrypted file to view", 0, len(encrypted_files) - 1, 0)
+            st.code(encrypted_files[file_index], language="text")
+    else:
+        st.error("No user is logged in.")
+
 # Main view
 def home():
     st.title("🔐 Personal Data Encryption")
