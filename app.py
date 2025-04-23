@@ -102,9 +102,10 @@ def encrypt_decrypt_data():
             st.session_state.view = "login"
             st.experimental_rerun()
 
-        # Display Slider with Encrypted Files
+        # Display Slider with Encrypted Files if available
         encrypted_files = df[df["Username"] == st.session_state.username]["Encrypted_Data"].dropna().tolist()
         
+        # Check if there are encrypted files
         if encrypted_files:
             file_index = st.slider("Select an encrypted file to view", 0, len(encrypted_files) - 1, 0)
             st.code(encrypted_files[file_index], language="text")
